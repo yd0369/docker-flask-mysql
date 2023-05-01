@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+  flask:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./server_src:/app/
+    environment:
+      FLASK_ENV: development
+      FLASK_APP: app.py
+      FLASK_DEBUG: 1 
+      MYSQL_HOST: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: toor
+      MYSQL_DB: items_db
+    depends_on:
+      - mysql
+    command: flask run --host=0.0.0.0
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: items_db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: toor
+      MYSQL_ROOT_PASSWORD: toor
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/mysql/data:/var/lib/mysql
+      - ./database/mysql/:/docker-entrypoint-initdb.d
